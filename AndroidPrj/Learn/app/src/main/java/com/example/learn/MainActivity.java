@@ -2,6 +2,7 @@ package com.example.learn;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -14,11 +15,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String tempOperater = "";
     boolean isOperaterBefore = false;
     boolean isFirst = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Typeface tf = Typeface.createFromAsset(getAssets(), "digital.ttf");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         view = findViewById(R.id.view);
+        view.setTypeface(tf);
         tmpView = findViewById(R.id.tmpView);
         findViewById(R.id.bs).setOnClickListener(this);
         findViewById(R.id.c).setOnClickListener(this);
@@ -42,320 +46,349 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.n0).setOnClickListener(this);
     }
 
-    void justifyViewSize(){
+    void justifyViewSize() {
         String content = view.getText().toString();
         String tmpContent = tmpView.getText().toString();
-        if(content.length() < 29) view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+        if (content.length() < 29) view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
         else view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        if(content.length() < 12) view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
-        else{
-            for(int i = 12; i < 19; i++)
-                if(content.length() == i) {
-                    view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 56 - (i - 12)*4);
+        if (content.length() < 12) view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 60);
+        else {
+            for (int i = 12; i < 19; i++)
+                if (content.length() == i) {
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 56 - (i - 12) * 4);
                     break;
                 }
         }
     }
 
-    void isSecondOperand(){
-        if(isOperaterBefore) {
+    void isSecondOperand() {
+        if (isOperaterBefore) {
             view.setText("");
             isOperaterBefore = false;
         }
     }
-    void calculate(){
+
+    void calculate() {
         String currentOperand = view.getText().toString();
-        if(currentOperand.contains(".") || tempOperand.contains(".") || tempOperater.equals("/")){
-            Double first = Double.parseDouble(tempOperand);
-            Double second = Double.parseDouble(currentOperand);
-            Double result;
-            switch (tempOperater){
-                case "+":{
-                    result = first + second;
-                    break;
+        try {
+            if (currentOperand.contains(".") || tempOperand.contains(".") || tempOperater.equals("/")) {
+                Double first = Double.parseDouble(tempOperand);
+                Double second = Double.parseDouble(currentOperand);
+                Double result;
+                switch (tempOperater) {
+                    case "+": {
+                        result = first + second;
+                        break;
+                    }
+                    case "-": {
+                        result = first - second;
+                        break;
+                    }
+                    case "*": {
+                        result = first * second;
+                        break;
+                    }
+                    case "/": {
+                        result = first / second;
+                        break;
+                    }
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + tempOperater);
                 }
-                case "-":{
-                    result = first - second;
-                    break;
+                double checkInt = result % 1;
+                if (checkInt == 0.0) {
+                    Integer r = (int) Math.round(result);
+                    tempOperand = Integer.toString(r);
+                } else
+                    tempOperand = Double.toString((double) Math.round(result * 1000000000) / 1000000000);
+            } else {
+                Integer first = Integer.parseInt(tempOperand);
+                Integer second = Integer.parseInt(currentOperand);
+                Integer result;
+                switch (tempOperater) {
+                    case "+": {
+                        result = first + second;
+                        break;
+                    }
+                    case "-": {
+                        result = first - second;
+                        break;
+                    }
+                    case "*": {
+                        result = first * second;
+                        break;
+                    }
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + tempOperater);
                 }
-                case "*":{
-                    result = first * second;
-                    break;
-                }
-                case "/":{
-                    result = first/second;
-                    break;
-                }
-                default:
-                    throw new IllegalStateException("Unexpected value: " + tempOperater);
+                tempOperand = Integer.toString(result);
             }
-            double checkInt = result%1;
-            if(checkInt == 0.0){
-                Integer r = (int) Math.round(result);
-                tempOperand = Integer.toString(r);
-            }
-            else
-                tempOperand = Double.toString((double) Math.round(result*1000000000)/1000000000);
+            view.setText(tempOperand);
+        } catch (Exception e) {
+            e.printStackTrace();
+            view.setText("Too Large Number");
+            tmpView.setText("");
+            tempOperand = "0";
+            tempOperater = "";
+            isFirst = true;
+            isOperaterBefore = false;
         }
-        else{
-            Integer first = Integer.parseInt(tempOperand);
-            Integer second = Integer.parseInt(currentOperand);
-            Integer result;
-            switch (tempOperater){
-                case "+":{
-                    result = first + second;
-                    break;
-                }
-                case "-":{
-                    result = first - second;
-                    break;
-                }
-                case "*":{
-                    result = first * second;
-                    break;
-                }
-                default:
-                    throw new IllegalStateException("Unexpected value: " + tempOperater);
-            }
-            tempOperand = Integer.toString(result);
-        }
-        view.setText(tempOperand);
 
         tempOperater = "";
     }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        try {
-            switch (id) {
-                case R.id.n0: {
-                    if (view.getText().length() == 16 || isFirst) break;
-                    isSecondOperand();
-                    view.setText(view.getText() + "0");
+        switch (id) {
+            case R.id.n0: {
+                if (view.getText().length() == 16 || isFirst || isOperaterBefore) break;
+                isSecondOperand();
+                view.setText(view.getText() + "0");
+                break;
+            }
+            case R.id.n1: {
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("1");
+                    isFirst = false;
                     break;
                 }
-                case R.id.n1: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("1");
-                        isFirst = false;
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "1");
+                break;
+            }
+            case R.id.n2: {
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("2");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "2");
+                break;
+            }
+            case R.id.n3: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("3");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "3");
+                break;
+            }
+            case R.id.n4: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("4");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "4");
+                break;
+            }
+            case R.id.n5: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("5");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "5");
+                break;
+            }
+            case R.id.n6: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("6");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "6");
+                break;
+            }
+            case R.id.n7: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("7");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "7");
+                break;
+            }
+            case R.id.n8: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("8");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "8");
+                break;
+            }
+            case R.id.n9: {
+
+                isSecondOperand();
+                if (isFirst) {
+                    view.setText("9");
+                    isFirst = false;
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + "9");
+                break;
+            }
+            case R.id.plus: {
+                if (!tempOperater.equals("")) {
+                    tmpView.setText(tmpView.getText() + "" + view.getText());
+                    calculate();
+                    tempOperater = "+";
+                    isOperaterBefore = true;
+                } else {
+                    if (view.getText().equals("0")) break;
+                    if(view.getText().equals("Too Large Number")){
+                        view.setText("0");
                         break;
                     }
-                    view.setText(view.getText() + "1");
-                    break;
+                    isFirst = false;
+                    tempOperand = view.getText().toString();
+                    tempOperater = "+";
+                    isOperaterBefore = true;
+                    tmpView.setText(tempOperand + " " + "+ ");
                 }
-                case R.id.n2: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("2");
-                        isFirst = false;
+                break;
+            }
+            case R.id.minus: {
+                if (!tempOperater.equals("")) {
+                    tmpView.setText(tmpView.getText() + "" + view.getText());
+                    calculate();
+                    tempOperater = "-";
+                    isOperaterBefore = true;
+                } else {
+                    if (view.getText().equals("0")) break;
+                    if(view.getText().equals("Too Large Number")){
+                        view.setText("0");
                         break;
                     }
-                    view.setText(view.getText() + "2");
-                    break;
+                    isFirst = false;
+                    tempOperand = view.getText().toString();
+                    tempOperater = "-";
+                    isOperaterBefore = true;
+                    tmpView.setText(tempOperand + " " + "- ");
                 }
-                case R.id.n3: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("3");
-                        isFirst = false;
+                break;
+            }
+            case R.id.mul: {
+                if (!tempOperater.equals("")) {
+                    tmpView.setText(tmpView.getText() + "" + view.getText());
+                    calculate();
+                    tempOperater = "*";
+                    isOperaterBefore = true;
+                } else {
+                    if (view.getText().equals("0")) break;
+                    if(view.getText().equals("Too Large Number")){
+                        view.setText("0");
                         break;
                     }
-                    view.setText(view.getText() + "3");
-                    break;
+                    isFirst = false;
+                    tempOperand = view.getText().toString();
+                    tempOperater = "*";
+                    isOperaterBefore = true;
+                    tmpView.setText(tempOperand + " " + "* ");
                 }
-                case R.id.n4: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("4");
-                        isFirst = false;
+                break;
+            }
+            case R.id.div: {
+                if (!tempOperater.equals("")) {
+                    tmpView.setText(tmpView.getText() + "" + view.getText());
+                    calculate();
+                    tempOperater = "/";
+                    isOperaterBefore = true;
+                } else {
+                    if (view.getText().equals("0")) break;
+                    if(view.getText().equals("Too Large Number")){
+                        view.setText("0");
                         break;
                     }
-                    view.setText(view.getText() + "4");
-                    break;
+                    isFirst = false;
+                    tempOperand = view.getText().toString();
+                    tempOperater = "/";
+                    isOperaterBefore = true;
+                    tmpView.setText(tempOperand + " " + "/ ");
                 }
-                case R.id.n5: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("5");
-                        isFirst = false;
-                        break;
-                    }
-                    view.setText(view.getText() + "5");
-                    break;
-                }
-                case R.id.n6: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("6");
-                        isFirst = false;
-                        break;
-                    }
-                    view.setText(view.getText() + "6");
-                    break;
-                }
-                case R.id.n7: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("7");
-                        isFirst = false;
-                        break;
-                    }
-                    view.setText(view.getText() + "7");
-                    break;
-                }
-                case R.id.n8: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("8");
-                        isFirst = false;
-                        break;
-                    }
-                    view.setText(view.getText() + "8");
-                    break;
-                }
-                case R.id.n9: {
-                    if (view.getText().length() == 16) break;
-                    isSecondOperand();
-                    if (isFirst) {
-                        view.setText("9");
-                        isFirst = false;
-                        break;
-                    }
-                    view.setText(view.getText() + "9");
-                    break;
-                }
-                case R.id.plus: {
-                    if (!tempOperater.equals("")) {
-                        tmpView.setText(tmpView.getText() +""+ view.getText());
-                        calculate();
-                        tempOperater = "+";
-                        isOperaterBefore = true;
-                    } else {
-//                        if (view.getText().equals("0")) break;
-                        isFirst = false;
-                        tempOperand = view.getText().toString();
-                        tempOperater = "+";
-                        isOperaterBefore = true;
-                        tmpView.setText(tempOperand + " " + "+ ");
-                    }
-                    break;
-                }
-                case R.id.minus: {
-                    if (!tempOperater.equals("")) {
-                        tmpView.setText(tmpView.getText() +""+ view.getText());
-                        calculate();
-                        tempOperater = "-";
-                        isOperaterBefore = true;
-                    } else {
-                        if (view.getText().equals("0")) break;
-                        isFirst = false;
-                        tempOperand = view.getText().toString();
-                        tempOperater = "-";
-                        isOperaterBefore = true;
-                        tmpView.setText(tempOperand + " " + "- ");
-                    }
-                    break;
-                }
-                case R.id.mul: {
-                    if (!tempOperater.equals("")) {
-                        tmpView.setText(tmpView.getText() +""+ view.getText());
-                        calculate();
-                        tempOperater = "*";
-                        isOperaterBefore = true;
-                    } else {
-                        if (view.getText().equals("0")) break;
-                        isFirst = false;
-                        tempOperand = view.getText().toString();
-                        tempOperater = "*";
-                        isOperaterBefore = true;
-                        tmpView.setText(tempOperand + " " + "* ");
-                    }
-                    break;
-                }
-                case R.id.div: {
-                    if (!tempOperater.equals("")) {
-                        tmpView.setText(tmpView.getText() +""+ view.getText());
-                        calculate();
-                        tempOperater = "/";
-                        isOperaterBefore = true;
-                    } else {
-                        if (view.getText().equals("0")) break;
-                        isFirst = false;
-                        tempOperand = view.getText().toString();
-                        tempOperater = "/";
-                        isOperaterBefore = true;
-                        tmpView.setText(tempOperand + " "+ "/ ");
-                    }
-                    break;
-                }
-                case R.id.equal: {
-                    try {
-                        if(!tempOperater.equals("")) tmpView.setText(tmpView.getText() +""+ view.getText());
-                        calculate();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    isFirst = true;
-                    isOperaterBefore = false;
-                    break;
-                }
-                case R.id.ce: {
-                    view.setText("0");
-                    isFirst = true;
-                    break;
-                }
-                case R.id.c: {
+                break;
+            }
+            case R.id.equal: {
+                if (!tempOperater.equals(""))
+                    tmpView.setText(tmpView.getText() + "" + view.getText());
+                calculate();
+                isFirst = true;
+                isOperaterBefore = false;
+                break;
+            }
+            case R.id.ce: {
+                view.setText("0");
+                isFirst = true;
+                break;
+            }
+            case R.id.c: {
+                tmpView.setText("");
+                view.setText("0");
+                tempOperand = "0";
+                tempOperater = "";
+                isFirst = true;
+                isOperaterBefore = false;
+                break;
+            }
+            case R.id.bs: {
+                if (view.getText().equals("Too Large Number")) {
                     tmpView.setText("");
                     view.setText("0");
                     tempOperand = "0";
                     tempOperater = "";
                     isFirst = true;
                     isOperaterBefore = false;
-                    break;
                 }
-                case R.id.bs: {
-                    if(view.getText().equals("Too Large Number")){
-                        tmpView.setText("");
-                        view.setText("0");
-                        tempOperand = "0";
-                        tempOperater = "";
-                        isFirst = true;
-                        isOperaterBefore = false;
-                    }
-                    if (view.getText().length() == 1) {
-                        view.setText("0");
-                        isFirst = true;
-                    } else view.setText(view.getText().subSequence(0, view.getText().length() - 1));
-                    break;
-                }
-                case R.id.reverse: {
-                    if(view.getText().toString().contains("-")) view.setText(view.getText().subSequence(1, view.getText().length()));
-                    else view.setText("-"+view.getText());
-                    break;
-                }
-                case R.id.point: {
-                    if (view.getText().length() == 16) break;
-                    view.setText(view.getText() + ".");
-                    break;
-                }
+                if (view.getText().length() == 1) {
+                    view.setText("0");
+                    isFirst = true;
+                } else view.setText(view.getText().subSequence(0, view.getText().length() - 1));
+                break;
             }
-        }catch (Exception e){
-            view.setText("Too Large Number");
-            e.printStackTrace();
-            tmpView.setText("");
-            tempOperand = "0";
-            tempOperater = "";
-            isFirst = true;
-            isOperaterBefore = false;
+            case R.id.reverse: {
+                if(view.getText().equals("Too Large Number")){
+                    view.setText("0");
+                    break;
+                }
+                if (view.getText().toString().contains("-"))
+                    view.setText(view.getText().subSequence(1, view.getText().length()));
+                else view.setText("-" + view.getText());
+                break;
+            }
+            case R.id.point: {
+                if(view.getText().equals("Too Large Number")){
+                    view.setText("0");
+                    break;
+                }
+                if (view.getText().length() == 16) break;
+                view.setText(view.getText() + ".");
+                break;
+            }
         }
         justifyViewSize();
     }
