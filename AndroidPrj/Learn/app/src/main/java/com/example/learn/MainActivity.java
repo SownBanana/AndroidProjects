@@ -2,6 +2,7 @@ package com.example.learn;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -9,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView tmpView;
+    TextView tmpView;           //view phụ
     TextView view;
     String tempOperand = "0";
     String tempOperater = "";
@@ -18,11 +19,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Typeface tf = Typeface.createFromAsset(getAssets(), "digital.ttf");
+        /*Typeface tf = Typeface.createFromAsset(getAssets(), "digital.ttf");
+        view.setTypeface(tf);*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         view = findViewById(R.id.view);
-        view.setTypeface(tf);
         tmpView = findViewById(R.id.tmpView);
         findViewById(R.id.bs).setOnClickListener(this);
         findViewById(R.id.c).setOnClickListener(this);
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             view.setText(tempOperand);
         } catch (Exception e) {
             e.printStackTrace();
+            if(tempOperater.equals("")) return;
             view.setText("Too Large Number");
             tmpView.setText("");
             tempOperand = "0";
@@ -255,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             case R.id.plus: {
                 if (!tempOperater.equals("")) {
-                    tmpView.setText(tmpView.getText() + "" + view.getText());
                     calculate();
                     tempOperater = "+";
                     isOperaterBefore = true;
@@ -269,13 +270,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tempOperand = view.getText().toString();
                     tempOperater = "+";
                     isOperaterBefore = true;
-                    tmpView.setText(tempOperand + " " + "+ ");
                 }
+                tmpView.setText(tempOperand + " " + "+ ");
                 break;
             }
             case R.id.minus: {
                 if (!tempOperater.equals("")) {
-                    tmpView.setText(tmpView.getText() + "" + view.getText());
                     calculate();
                     tempOperater = "-";
                     isOperaterBefore = true;
@@ -289,13 +289,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tempOperand = view.getText().toString();
                     tempOperater = "-";
                     isOperaterBefore = true;
-                    tmpView.setText(tempOperand + " " + "- ");
                 }
+                tmpView.setText(tempOperand + " " + "- ");
                 break;
             }
             case R.id.mul: {
                 if (!tempOperater.equals("")) {
-                    tmpView.setText(tmpView.getText() + "" + view.getText());
                     calculate();
                     tempOperater = "*";
                     isOperaterBefore = true;
@@ -309,13 +308,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tempOperand = view.getText().toString();
                     tempOperater = "*";
                     isOperaterBefore = true;
-                    tmpView.setText(tempOperand + " " + "* ");
                 }
+                tmpView.setText(tempOperand + " " + "* ");
                 break;
             }
             case R.id.div: {
                 if (!tempOperater.equals("")) {
-                    tmpView.setText(tmpView.getText() + "" + view.getText());
                     calculate();
                     tempOperater = "/";
                     isOperaterBefore = true;
@@ -329,8 +327,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tempOperand = view.getText().toString();
                     tempOperater = "/";
                     isOperaterBefore = true;
-                    tmpView.setText(tempOperand + " " + "/ ");
                 }
+                tmpView.setText(tempOperand + " " + "/ ");
                 break;
             }
             case R.id.equal: {
@@ -381,13 +379,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
             case R.id.point: {
-                if(view.getText().equals("Too Large Number")){
+/*                if(view.getText().equals("Too Large Number")){
                     view.setText("0");
                     break;
                 }
                 if (view.getText().length() == 16) break;
                 view.setText(view.getText() + ".");
-                break;
+                break;*/
+
+                Intent intent = new Intent(this, CurrencyExchange.class);
+                startActivity(intent);
+
             }
         }
         justifyViewSize();
