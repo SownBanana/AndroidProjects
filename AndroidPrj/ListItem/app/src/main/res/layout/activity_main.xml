@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="20dp"
+            android:hint="Fill Your eMail..."/>
+        <ImageButton
+            android:id="@+id/favorFill"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/uncheck_star_35dp"
+            android:layout_weight="5"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/error_mss"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You don't have any eMails!"
+        android:textSize="22dp"
+        android:gravity="center"
+        android:layout_marginTop="10dp" />
+    <ListView
+        android:id="@+id/list_mail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"/>
+
+</LinearLayout>

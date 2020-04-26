@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="10dp"
+    android:id="@+id/mail">
+
+    <TextView
+        android:id="@+id/nameAva"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@drawable/circal_background"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_marginRight="10dp"
+        android:text="B"
+        android:textSize="35sp"
+        android:gravity="center"
+        android:textColor="#FFF"
+       />
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/nameAva"
+        android:layout_marginLeft="10dp"
+        android:text="Banana"
+        android:textSize="22sp"
+        android:textColor="#2F2F2F"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_toRightOf="@+id/nameAva"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/favorite"
+        android:textSize="20sp"
+        android:textColor="#2F2F2F"
+        android:singleLine="true"
+        android:text="This is Subject of Mail" />
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/subject"
+        android:layout_toRightOf="@+id/nameAva"
+        android:layout_toLeftOf="@+id/favorite"
+        android:layout_marginLeft="10dp"
+        android:textSize="20sp"
+        android:text="This is so long contert that will so long so long so long"
+        android:singleLine="true"/>
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4:20 PM"
+        android:layout_alignParentRight="true"
+        android:textSize="17dp"
+        />
+
+    <ImageView
+
+        android:id="@+id/favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/uncheck_star_35dp"
+        android:layout_alignBottom="@id/content"
+        />
+
+</RelativeLayout>
